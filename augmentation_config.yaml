@@ -1,0 +1,133 @@
+# ==========================================================
+# 🔧 CONFIGURATION FILE — AugmentationPipelineV2 (v2.3.1-lite)
+# ==========================================================
+
+# Root output directory for augmented datasets and reports
+output_dir: "data/outputs"
+
+# ==========================================================
+# PATHS
+# ==========================================================
+paths:
+  clean_dir: "C:/Users/Jaime/Documents/Projects/animal-count/data/outputs/mirror_clean/train_joined/images"
+  clean_json: "C:/Users/Jaime/Documents/Projects/animal-count/data/outputs/mirror_clean/train_joined/train_joined.json"
+
+# ==========================================================
+# DATASET SETTINGS
+# ==========================================================
+classes:
+  - Buffalo
+  - Elephant
+  - Kob
+  - Alcelaphinae
+  - Warthog
+  - Waterbuck
+
+num_workers: 6
+seed: 42
+
+# ==========================================================
+# AUGMENTATION SETTINGS
+# ==========================================================
+augmentations:
+  enabled: true
+  mode: "over"               # over / under / none
+  proportion: 0.10           # gentle proportional augmentation (≈5%)
+  tolerance: 0.2             # strict tolerance, encourages gradual convergence
+  adaptive_rebalance: true   # enable adaptive iterative rebalance
+
+  # ========================================================
+  # Adaptive Rebalance Parameters
+  # ========================================================
+  adaptive_rebalance_iter: 3        # very few adaptive iterations
+  adaptive_rebalance_prop: 0.8      # 30% of minority images per iteration
+  adaptive_minority_dominance: 0.8  # minority must dominate ≥80% of objects
+  max_repeats: 15                   # cap repeated augmentations
+  min_unique_ratio: 0.10            # enforce uniqueness across cycles
+  minority_strategy: bottom_n
+  bottom_n: 2
+
+  # ========================================================
+  # Minority Focus Reinforcement (post-rebalance zoom)
+  # ========================================================
+  focus_reinforce_prop: 0.08  # zoom 8% of minority images after final rebalance
+  focus_zoom_scale: 1.5       # mild zoom around minority species
+  focus_zoom_offset: 0.2      # random offset (avoids perfect centering)
+
+  # ========================================================
+  # TRANSFORM DEFINITIONS (Albumentations)
+  # ========================================================
+  transforms:
+
+    # --- Geometric variability ---
+    Affine:
+      scale: [0.97, 1.03]
+      translate_percent: [0.0, 0.015]
+      rotate: [-1.5, 1.5]
+      shear: [-0.8, 0.8]
+      fit_output: True
+      p: 0.22
+
+    HorizontalFlip:
+      p: 0.1 
+
+    Perspective:
+      scale: 0.015
+      keep_size: True
+      p: 0.05
+
+    # --- Photometric variability ---
+    RandomBrightnessContrast:
+      brightness_limit: 0.1
+      contrast_limit: 0.1
+      p: 0.08
+
+    HueSaturationValue:
+      hue_shift_limit: 6
+      sat_shift_limit: 12
+      val_shift_limit: 6
+      p: 0.07
+
+    RandomGamma:
+      gamma_limit: [96, 104]
+      p: 0.05
+
+    # --- Atmospheric and illumination variability ---
+    RandomShadow:
+      shadow_roi: [0, 0.65, 1, 1]
+      shadow_dimension: 3
+      p: 0.04
+
+    RandomSunFlare:
+      flare_roi: [0.15, 0.15, 0.85, 0.85]
+      src_radius: 30
+      src_color: [255, 255, 210]
+      p: 0.02
+
+    RandomFog:
+      alpha_coef: 0.06
+      p: 0.02
+
+    # --- Sensor variability ---
+    GaussianBlur:
+      blur_limit: [3, 3]
+      p: 0.04
+
+    RGBShift:
+      r_shift_limit: 4
+      g_shift_limit: 4
+      b_shift_limit: 4
+      p: 0.03
+
+    # --- Minimal artificial occlusion ---
+    CoarseDropout:
+      p: 0.015
+
+
+# ==========================================================
+# LOGGING
+# ==========================================================
+logging:
+  level: "INFO"
+  format: "[%(asctime)s] %(levelname)s: %(message)s"
+  datefmt: "%H:%M:%S"

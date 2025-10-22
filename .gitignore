@@ -1,0 +1,62 @@
+# ==========================================================
+# PYTHON BUILD & CACHE FILES
+# ==========================================================
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+*.egg
+*.egg-info/
+build/
+dist/
+.eggs/
+.env/
+.venv/
+venv/
+ENV/
+env/
+.ipynb_checkpoints/
+*.ipynb_checkpoints
+
+# ==========================================================
+# LOGS AND REPORTS
+# ==========================================================
+*.log
+*.tmp
+*.bak
+*.swp
+reports/
+reports_*/
+reports_quality/
+reports_audit/
+*.json~
+
+# ==========================================================
+# DATA AND OUTPUTS
+# ==========================================================
+data/
+!data/*.yaml
+!data/*.yml
+!data/config.yaml
+!data/augmentation_config.yaml
+!data/quality_config.yaml
+
+# ==========================================================
+# IDEs & SYSTEM FILES
+# ==========================================================
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# ==========================================================
+# BACKUPS & TEMP FILES
+# ==========================================================
+*.zip
+*.tar
+*.tar.gz
+*.7z
+*.bak
+*.old
+*.tmp
