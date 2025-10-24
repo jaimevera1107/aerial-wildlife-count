@@ -19,6 +19,9 @@ from pathlib import Path
 import yaml
 from tqdm import tqdm
 
+# Import pipeline utilities
+from pipeline_utils import setup_training_paths, run_pipeline_if_needed
+
 # Ultralytics
 from ultralytics import YOLO
 
@@ -43,6 +46,7 @@ def find_train_final(aug_cfg):
 def find_val_test(qual_cfg):
     """Lee quality_config.yaml y retorna paths a val/test (COCO JSON) y las carpetas de imágenes."""
     splits = qual_cfg.get("splits", {})
+    # Las rutas en el config ya son relativas desde src/v1/
     val_json = Path(splits["val"]).resolve()
     test_json = Path(splits["test"]).resolve()
     if not val_json.exists() or not test_json.exists():
@@ -129,22 +133,46 @@ def main():
     ap.add_argument("--batch", type=int, default=32)
     ap.add_argument("--device", default=0)
     ap.add_argument("--workers", type=int, default=8)
-    ap.add_argument("--project", default="runs_yolo")
+    ap.add_argument("--project", default="../../runs_yolo")
     ap.add_argument("--name", default="yolo_big_final")
     ap.add_argument("--fp16", action="store_true", help="Mixed precision")
     ap.add_argument("--close_mosaic", type=int, default=10, help="Cerrar mosaic en últimas N épocas")
     ap.add_argument("--patience", type=int, default=10)
     ap.add_argument("--tmp_yolo", action="store_true",
                     help="Convierte COCO->YOLO en tmp para val/test (recomendado si no tienes formato YOLO).")
+    ap.add_argument("--auto-pipeline", action="store_true", help="Run data processing pipeline if needed")
+    ap.add_argument("--dataset-type", default="auto", choices=["auto", "original", "quality", "augmented"], 
+                   help="Type of dataset to use for training")
     args = ap.parse_args()
 
-    aug_cfg = load_yaml(args.aug_yaml)
+    # Run pipeline if needed
+    if args.auto_pipeline:
+        print("Checking if data processing pipeline needs to be run...")
+        run_pipeline_if_needed(force=False)
+
+    # Setup training paths using pipeline utilities
+    try:
+        training_config = setup_training_paths(
+            model_type="yolov8",
+            dataset_type=args.dataset_type,
+            split="train"
+        )
+        print(f"Using dataset: {training_config['dataset']['json_path']}")
+        
+        # Use the detected dataset
+        train_json = Path(training_config['dataset']['json_path'])
+        train_dir = Path(training_config['dataset']['images_dir'])
+        
+    except Exception as e:
+        print(f"Failed to setup training paths: {e}")
+        print("Falling back to original method...")
+        
+        # Fallback to original method
+        aug_cfg = load_yaml(args.aug_yaml)
+        train_dir, train_json = find_train_final(aug_cfg)
+
+    # Get validation and test data
     qual_cfg = load_yaml(args.qual_yaml)
-
-    # TRAIN (aumentado)
-    train_dir, train_json = find_train_final(aug_cfg)
-
-    # VAL/TEST (limpios, COCO)
     val_json, test_json = find_val_test(qual_cfg)
 
     workdir = Path(args.project) / args.name
@@ -162,8 +190,8 @@ def main():
         labels = tmp / "labels"
         labels.mkdir(exist_ok=True)
         # convertimos VAL y TEST desde COCO (para que YOLO pueda validarlos)
-        names_val, images_val = coco_to_yolo(val_json, val_json.parent.parent.parent / "images", labels)
-        names_test, images_test = coco_to_yolo(test_json, test_json.parent.parent.parent / "images", labels)
+        names_val, images_val = coco_to_yolo(val_json, val_json.parent.parent.parent / "val", labels)
+        names_test, images_test = coco_to_yolo(test_json, test_json.parent.parent.parent / "test", labels)
         # Para TRAIN, tu pipeline de augment ya deja etiquetas en COCO; convertimos también:
         names_train, images_train = coco_to_yolo(train_json, train_dir, labels)
 

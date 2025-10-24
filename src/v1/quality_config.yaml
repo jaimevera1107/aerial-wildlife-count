@@ -8,7 +8,7 @@
 # --------------------------------------------------------------
 #  General settings
 # --------------------------------------------------------------
-output_dir: data/outputs         # Output folder for all generated results (logs, reports, mirrors, etc.)
+output_dir: ../../data/outputs         # Output folder for all generated results (logs, reports, mirrors, etc.)
 seed: 42                         # Random seed for deterministic operations
 num_workers: 8                   # Number of threads for concurrent tasks (image IO, validation, copies)
 allow_empty_images: false        # If true, images without annotations are retained
@@ -17,22 +17,24 @@ allow_empty_images: false        # If true, images without annotations are retai
 #  Image directories by split
 # --------------------------------------------------------------
 #  These must exist and contain the raw dataset images.
+#  Paths are relative from src/v1/ to the repository root
 image_dirs:
-  train: data/train
-  train_subframes: data/train_subframes
-  val: data/val
-  test: data/test
+  train: ../../data/train
+  train_subframes: ../../data/train_subframes
+  val: ../../data/val
+  test: ../../data/test
 
 # --------------------------------------------------------------
 #  Annotation files (COCO-style)
 # --------------------------------------------------------------
 #  Paths to the annotation JSON files for each split.
 #  Each file must follow the COCO structure: "images", "annotations", "categories".
+#  Paths are relative from src/v1/ to the repository root
 splits:
-  train: data/groundtruth/json/big_size/train_big_size_A_B_E_K_WH_WB.json
-  val: data/groundtruth/json/big_size/val_big_size_A_B_E_K_WH_WB.json
-  test: data/groundtruth/json/big_size/test_big_size_A_B_E_K_WH_WB.json
-  train_subframes: data/groundtruth/json/sub_frames/train_subframes_A_B_E_K_WH_WB.json
+  train: ../../data/groundtruth/json/big_size/train_big_size_A_B_E_K_WH_WB.json
+  val: ../../data/groundtruth/json/big_size/val_big_size_A_B_E_K_WH_WB.json
+  test: ../../data/groundtruth/json/big_size/test_big_size_A_B_E_K_WH_WB.json
+  train_subframes: ../../data/groundtruth/json/sub_frames/train_subframes_A_B_E_K_WH_WB.json
 
 # --------------------------------------------------------------
 #  Class definitions

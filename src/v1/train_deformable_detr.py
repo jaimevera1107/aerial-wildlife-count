@@ -16,6 +16,9 @@ import yaml
 from mmengine.config import Config
 from mmengine.runner import Runner
 
+# Import pipeline utilities
+from pipeline_utils import setup_training_paths, run_pipeline_if_needed
+
 def load_yaml(p):
     with open(p, "r", encoding="utf-8") as f:
         return yaml.safe_load(f)
@@ -30,6 +33,7 @@ def find_train_final(aug_cfg):
 
 def find_val_test(qual_cfg):
     splits = qual_cfg.get("splits", {})
+    # Las rutas en el config ya son relativas desde src/v1/
     val_json = Path(splits["val"]).resolve()
     test_json = Path(splits["test"]).resolve()
     if not val_json.exists() or not test_json.exists():
@@ -77,7 +81,7 @@ def build_cfg(backbone: str, imgsz: int, epochs: int,
             dataset=dict(
                 type="CocoDataset",
                 ann_file=str(val_json),
-                data_prefix=dict(img=str(val_json.parent.parent / "images" / "val")),
+                data_prefix=dict(img=str(val_json.parent.parent.parent / "val")),
                 test_mode=True
             ),
         ),
@@ -89,7 +93,7 @@ def build_cfg(backbone: str, imgsz: int, epochs: int,
             dataset=dict(
                 type="CocoDataset",
                 ann_file=str(test_json),
-                data_prefix=dict(img=str(test_json.parent.parent / "images" / "test")),
+                data_prefix=dict(img=str(test_json.parent.parent.parent / "test")),
                 test_mode=True
             ),
         ),
@@ -153,16 +157,45 @@ def main():
     ap.add_argument("--backbone", default="swin_t", choices=["swin_t", "resnext"])
     ap.add_argument("--imgsz", type=int, default=896)
     ap.add_argument("--epochs", type=int, default=50)
-    ap.add_argument("--workdir", default="work_dirs/deformable_detr")
+    ap.add_argument("--workdir", default="../../work_dirs/deformable_detr")
+    ap.add_argument("--auto-pipeline", action="store_true", help="Run data processing pipeline if needed")
+    ap.add_argument("--dataset-type", default="auto", choices=["auto", "original", "quality", "augmented"], 
+                   help="Type of dataset to use for training")
     args = ap.parse_args()
 
-    aug_cfg = load_yaml(args.aug_yaml)
-    qual_cfg = load_yaml(args.qual_yaml)
+    # Run pipeline if needed
+    if args.auto_pipeline:
+        print("Checking if data processing pipeline needs to be run...")
+        run_pipeline_if_needed(force=False)
 
-    train_dir, train_json = find_train_final(aug_cfg)
+    # Setup training paths using pipeline utilities
+    try:
+        training_config = setup_training_paths(
+            model_type="deformable_detr",
+            dataset_type=args.dataset_type,
+            split="train"
+        )
+        print(f"Using dataset: {training_config['dataset']['json_path']}")
+        
+        # Use the detected dataset
+        train_json = Path(training_config['dataset']['json_path'])
+        train_dir = Path(training_config['dataset']['images_dir'])
+        workdir = Path(training_config['work_dir'])
+        
+    except Exception as e:
+        print(f"Failed to setup training paths: {e}")
+        print("Falling back to original method...")
+        
+        # Fallback to original method
+        aug_cfg = load_yaml(args.aug_yaml)
+        qual_cfg = load_yaml(args.qual_yaml)
+        train_dir, train_json = find_train_final(aug_cfg)
+        workdir = Path(args.workdir)
+
+    # Get validation and test data
+    qual_cfg = load_yaml(args.qual_yaml)
     val_json, test_json = find_val_test(qual_cfg)
 
-    workdir = Path(args.workdir)
     workdir.mkdir(parents=True, exist_ok=True)
 
     cfg = build_cfg(args.backbone, args.imgsz, args.epochs,

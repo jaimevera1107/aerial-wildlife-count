@@ -3,14 +3,16 @@
 # ==========================================================
 
 # Root output directory for augmented datasets and reports
-output_dir: "data/outputs"
+# Path is relative from src/v1/ to the repository root
+output_dir: "../../data/outputs"
 
 # ==========================================================
 # PATHS
 # ==========================================================
+# Paths are relative from src/v1/ to the repository root
 paths:
-  clean_dir: "C:/Users/Jaime/Documents/Projects/animal-count/data/outputs/mirror_clean/train_joined/images"
-  clean_json: "C:/Users/Jaime/Documents/Projects/animal-count/data/outputs/mirror_clean/train_joined/train_joined.json"
+  clean_dir: "../../data/outputs/mirror_clean/train_joined/images"
+  clean_json: "../../data/outputs/mirror_clean/train_joined/train_joined.json"
 
 # ==========================================================
 # DATASET SETTINGS
