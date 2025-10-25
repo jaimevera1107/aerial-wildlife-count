@@ -1,0 +1,200 @@
+{
+ "cells": [
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## 🔧 Instalación de Dependencias"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## 📦 Importar Librerías"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## 📁 Configuración de Datos"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## 📊 Análisis de Datos\n"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## ⚙️ Configuración del Entrenamiento"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## 🔧 Funciones de Backup Mejoradas\n"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## 📊 Monitoreo en Tiempo Real\n"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## 🚀 Inicialización del Sistema de Backup\n"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## 🔄 Conversión de Datos COCO a YOLO\n"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## 🚀 Entrenamiento Optimizado con Backup Automático\n"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## 📊 Visualización de Resultados"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## 📊 Cálculo de Métricas de Clasificación\n"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## 🔍 Inferencia y Pruebas"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## 💾 Guardar y Exportar Modelo"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## 🚀 Instrucciones de Uso - V1 Optimizado\n",
+    "\n",
+    "### 📋 **Antes de Ejecutar:**\n",
+    "1. **Montar Google Drive** (se hace automáticamente)\n",
+    "2. **Verificar que tienes Colab Pro/Pro+** para mejor rendimiento\n",
+    "3. **Configurar datos** en la estructura correcta\n",
+    "\n",
+    "### 🔥 **Características V1:**\n",
+    "- **Backup automático**: Los checkpoints se guardan en Drive cada 10 épocas\n",
+    "- **Recuperación automática**: Si se interrumpe, reanuda desde el último checkpoint\n",
+    "- **Configuración optimizada**: Batch size 32, workers 8 para mayor velocidad\n",
+    "- **Monitoreo en tiempo real**: Usa `show_training_status()` para ver progreso\n",
+    "\n",
+    "### 📊 **Comandos Útiles Durante el Entrenamiento:**\n",
+    "```python\n",
+    "# Ver estado del entrenamiento\n",
+    "show_training_status()\n",
+    "\n",
+    "# Hacer backup manual\n",
+    "backup_to_drive()\n",
+    "\n",
+    "# Verificar backups en Drive\n",
+    "monitor_training_progress()\n",
+    "```\n",
+    "\n",
+    "### ⚠️ **Importante:**\n",
+    "- **NO cierres la pestaña** de Colab durante el entrenamiento\n",
+    "- **Los backups se hacen automáticamente** cada 10 épocas\n",
+    "- **Si se interrumpe**, simplemente ejecuta de nuevo y reanudará automáticamente\n",
+    "- **Los checkpoints se guardan en**: `/content/drive/MyDrive/aerial-wildlife-count-results/yolo_v1/`\n",
+    "\n",
+    "### 🎯 **Optimizaciones de Velocidad:**\n",
+    "- **Batch size**: 32 (vs 16 original)\n",
+    "- **Workers**: 8 (vs 4 original)  \n",
+    "- **Save period**: 5 épocas (vs 10 original)\n",
+    "- **Mixed precision**: Habilitado\n",
+    "- **Early stopping**: 10 épocas de paciencia\n"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## 🎉 ¡Entrenamiento Completado! - V1 Optimizado\n",
+    "\n",
+    "### 📋 Resumen del Entrenamiento V1\n",
+    "- **Modelo**: YOLOv8 con configuración {yolo_config.model}\n",
+    "- **Tamaño de imagen**: {yolo_config.image_size}x{yolo_config.image_size}\n",
+    "- **Épocas**: {yolo_config.epochs}\n",
+    "- **Early Stopping**: {yolo_config.patience} épocas de paciencia\n",
+    "- **Batch size optimizado**: {yolo_config.batch_size}\n",
+    "- **Workers optimizados**: {yolo_config.workers}\n",
+    "- **Clases detectadas**: {len(yolo_config.classes)} especies de animales\n",
+    "\n",
+    "### 🔥 **Mejoras V1 Implementadas:**\n",
+    "- ✅ **Guardado automático en Drive** cada {yolo_config.drive_backup_period} épocas\n",
+    "- ✅ **Recuperación automática** de entrenamiento interrumpido\n",
+    "- ✅ **Configuración optimizada** para mayor velocidad\n",
+    "- ✅ **Monitoreo en tiempo real** del progreso\n",
+    "- ✅ **Backup automático** de checkpoints\n",
+    "\n",
+    "### 📊 Próximos Pasos\n",
+    "1. **Evaluar métricas**: Revisar mAP, precision, recall\n",
+    "2. **Ajustar hiperparámetros**: Si es necesario mejorar el rendimiento\n",
+    "3. **Exportar modelo**: Convertir a ONNX o TorchScript para deployment\n",
+    "4. **Probar en nuevas imágenes**: Validar en datos no vistos\n",
+    "\n",
+    "### 🔧 Configuración Personalizada\n",
+    "Para modificar parámetros, edita la clase `YOLOConfig` en la celda de configuración:\n",
+    "- Cambiar modelo: `\"yolov8s.pt\"`, `\"yolov8m.pt\"`, `\"yolov8l.pt\"`, `\"yolov8x.pt\"`\n",
+    "- Ajustar épocas: `epochs = 200`\n",
+    "- Modificar tamaño de imagen: `image_size = 1024`\n",
+    "- Cambiar batch size: `batch_size = 32`\n",
+    "\n",
+    "### 📚 Recursos Adicionales\n",
+    "- [Documentación Ultralytics](https://docs.ultralytics.com/)\n",
+    "- [YOLOv8 Paper](https://arxiv.org/abs/2305.09972)\n",
+    "- [GitHub Ultralytics](https://github.com/ultralytics/ultralytics)\n"
+   ]
+  }
+ ],
+ "metadata": {
+  "accelerator": "GPU",
+  "kernelspec": {
+   "display_name": "Python 3",
+   "language": "python",
+   "name": "python3"
+  },
+  "language_info": {
+   "name": "python",
+   "version": "3.10.0"
+  }
+ },
+ "nbformat": 4,
+ "nbformat_minor": 2
+}

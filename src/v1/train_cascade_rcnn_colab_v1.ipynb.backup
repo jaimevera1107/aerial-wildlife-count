@@ -1,0 +1,202 @@
+{
+ "cells": [
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## 🔧 Instalación de Dependencias\n"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## 📦 Importar Librerías\n"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## 📁 Configuración de Datos\n"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "73fe8acf",
+   "metadata": {},
+   "source": [
+    "## 🔥 Funciones de Backup Automático en Drive\n"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "4b1ac9e9",
+   "metadata": {},
+   "source": [
+    "## 📊 Monitoreo en Tiempo Real\n"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "d4cf30ee",
+   "metadata": {},
+   "source": [
+    "## 🚀 Inicialización del Sistema de Backup\n"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## 📊 Cargar y Preparar Datos\n"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## 🏗️ Configuración del Modelo\n"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "3dbb932b",
+   "metadata": {},
+   "source": [
+    "## 🛑 Early Stopping Implementado\n",
+    "\n",
+    "### ✅ **Configuración Agregada**\n",
+    "- **Patience**: 5 épocas (configurable en `CascadeConfig`)\n",
+    "- **Métrica monitoreada**: `coco/bbox_mAP` (mean Average Precision)\n",
+    "- **Modo**: `max` (busca maximizar la métrica)\n",
+    "- **Delta mínimo**: 0.001 (mejora mínima requerida)\n",
+    "\n",
+    "### 🎯 **¿Cómo funciona?**\n",
+    "- El entrenamiento se detendrá automáticamente si la métrica `coco/bbox_mAP` no mejora durante **5 épocas consecutivas**\n",
+    "- Esto evita el sobreajuste y ahorra tiempo de entrenamiento\n",
+    "- El modelo se guardará automáticamente cuando se active el early stopping\n",
+    "\n",
+    "### ⚙️ **Personalización**\n",
+    "Para cambiar el comportamiento, modifica en la clase `CascadeConfig`:\n",
+    "```python\n",
+    "self.patience = 10  # Más paciencia (10 épocas)\n",
+    "self.patience = 3   # Menos paciencia (3 épocas)\n",
+    "```\n"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## 🚀 Entrenamiento del Modelo\n"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## 📊 Evaluación y Visualización\n"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "6ba5baf5",
+   "metadata": {},
+   "source": [
+    "## 📊 Cálculo de Métricas de Clasificación\n"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "79356e2c",
+   "metadata": {},
+   "source": [
+    "## 🚀 Instrucciones de Uso - V1 Optimizado\n",
+    "\n",
+    "### 📋 **Antes de Ejecutar:**\n",
+    "1. **Montar Google Drive** (se hace automáticamente)\n",
+    "2. **Verificar que tienes Colab Pro/Pro+** para mejor rendimiento\n",
+    "3. **Configurar datos** en la estructura correcta\n",
+    "\n",
+    "### 🔥 **Características V1:**\n",
+    "- **Backup automático**: Los checkpoints se guardan en Drive cada 5 épocas\n",
+    "- **Recuperación automática**: Si se interrumpe, reanuda desde el último checkpoint\n",
+    "- **Configuración optimizada**: Batch size 8, workers 8 para mayor velocidad\n",
+    "- **Monitoreo en tiempo real**: Usa `show_training_status()` para ver progreso\n",
+    "\n",
+    "### 📊 **Comandos Útiles Durante el Entrenamiento:**\n",
+    "```python\n",
+    "# Ver estado del entrenamiento\n",
+    "show_training_status()\n",
+    "\n",
+    "# Hacer backup manual\n",
+    "backup_to_drive()\n",
+    "\n",
+    "# Verificar backups en Drive\n",
+    "monitor_training_progress()\n",
+    "```\n",
+    "\n",
+    "### ⚠️ **Importante:**\n",
+    "- **NO cierres la pestaña** de Colab durante el entrenamiento\n",
+    "- **Los backups se hacen automáticamente** cada 5 épocas\n",
+    "- **Si se interrumpe**, simplemente ejecuta de nuevo y reanudará automáticamente\n",
+    "- **Los checkpoints se guardan en**: `/content/drive/MyDrive/aerial-wildlife-count-results/cascade_rcnn_v1/`\n",
+    "\n",
+    "### 🎯 **Optimizaciones de Velocidad:**\n",
+    "- **Batch size**: 8 (vs 4 original)\n",
+    "- **Val batch size**: 4 (vs 2 original)\n",
+    "- **Workers**: 8 (vs 4 original)\n",
+    "- **Save period**: 1 época (vs 10 original)\n",
+    "- **Early stopping**: 5 épocas de paciencia\n"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## 🎉 ¡Entrenamiento Completado!\n",
+    "\n",
+    "### 📋 Resumen del Entrenamiento\n",
+    "- **Modelo**: Cascade R-CNN con backbone {cascade_config.backbone}\n",
+    "- **Tamaño de imagen**: {cascade_config.imgsz}x{cascade_config.imgsz}\n",
+    "- **Épocas**: {cascade_config.epochs}\n",
+    "- **Early Stopping**: {cascade_config.patience} épocas de paciencia\n",
+    "- **Clases detectadas**: {len(cascade_config.classes)} especies de animales\n",
+    "\n",
+    "### 📊 Próximos Pasos\n",
+    "1. **Evaluar métricas**: Revisar mAP, precision, recall\n",
+    "2. **Ajustar hiperparámetros**: Si es necesario mejorar el rendimiento\n",
+    "3. **Exportar modelo**: Convertir a ONNX o TorchScript para deployment\n",
+    "4. **Probar en nuevas imágenes**: Validar en datos no vistos\n",
+    "\n",
+    "### 🔧 Configuración Personalizada\n",
+    "Para modificar parámetros, edita la clase `CascadeConfig` en la celda de configuración:\n",
+    "- Cambiar backbone: `\"swin_t\"` o `\"resnext\"`\n",
+    "- Ajustar épocas: `epochs = 100`\n",
+    "- Modificar tamaño de imagen: `imgsz = 1024`\n",
+    "- Cambiar batch size: `batch_size = 8`\n",
+    "- Ajustar early stopping: `patience = 10` (más paciencia) o `patience = 3` (menos paciencia)\n",
+    "\n",
+    "### 📚 Recursos Adicionales\n",
+    "- [Documentación MMDetection](https://mmdetection.readthedocs.io/)\n",
+    "- [Cascade R-CNN Paper](https://arxiv.org/abs/1712.00726)\n",
+    "- [Swin Transformer Paper](https://arxiv.org/abs/2103.14030)\n"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## 💾 Guardar y Descargar Resultados\n"
+   ]
+  }
+ ],
+ "metadata": {
+  "language_info": {
+   "name": "python"
+  }
+ },
+ "nbformat": 4,
+ "nbformat_minor": 5
+}

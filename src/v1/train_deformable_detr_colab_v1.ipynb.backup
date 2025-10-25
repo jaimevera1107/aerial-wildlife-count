@@ -1,0 +1,190 @@
+{
+ "cells": [
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## 🔧 Instalación de Dependencias\n"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## 📦 Importar Librerías\n"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## 📁 Configuración de Datos\n"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "ee24ee41",
+   "metadata": {},
+   "source": [
+    "## 🔥 Funciones de Backup Automático en Drive\n"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "eab0f926",
+   "metadata": {},
+   "source": [
+    "## 📊 Monitoreo en Tiempo Real\n"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "38c74e51",
+   "metadata": {},
+   "source": [
+    "## 🚀 Inicialización del Sistema de Backup\n"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "365d84af",
+   "metadata": {},
+   "source": [
+    "## 🛑 Early Stopping Implementado\n",
+    "\n",
+    "### ✅ **Configuración Agregada**\n",
+    "- **Patience**: 5 épocas (configurable en `DeformableDETRConfig`)\n",
+    "- **Métrica monitoreada**: `coco/bbox_mAP` (mean Average Precision)\n",
+    "- **Modo**: `max` (busca maximizar la métrica)\n",
+    "- **Delta mínimo**: 0.001 (mejora mínima requerida)\n",
+    "\n",
+    "### 🎯 **¿Cómo funciona?**\n",
+    "- El entrenamiento se detendrá automáticamente si la métrica `coco/bbox_mAP` no mejora durante **5 épocas consecutivas**\n",
+    "- Esto evita el sobreajuste y ahorra tiempo de entrenamiento\n",
+    "- El modelo se guardará automáticamente cuando se active el early stopping\n",
+    "\n",
+    "### ⚙️ **Personalización**\n",
+    "Para cambiar el comportamiento, modifica en la clase `DeformableDETRConfig`:\n",
+    "```python\n",
+    "self.patience = 10  # Más paciencia (10 épocas)\n",
+    "self.patience = 3   # Menos paciencia (3 épocas)\n",
+    "```\n"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## 🚀 Entrenamiento del Modelo\n"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "8b653046",
+   "metadata": {},
+   "source": [
+    "## 📊 Evaluación y Visualización"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "9d1f60a3",
+   "metadata": {},
+   "source": [
+    "## 📊 Cálculo de Métricas de Clasificación\n"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "92f45650",
+   "metadata": {},
+   "source": [
+    "## 🚀 Instrucciones de Uso - V1 Optimizado\n",
+    "\n",
+    "### 📋 **Antes de Ejecutar:**\n",
+    "1. **Montar Google Drive** (se hace automáticamente)\n",
+    "2. **Verificar que tienes Colab Pro/Pro+** para mejor rendimiento\n",
+    "3. **Configurar datos** en la estructura correcta\n",
+    "\n",
+    "### 🔥 **Características V1:**\n",
+    "- **Backup automático**: Los checkpoints se guardan en Drive cada 5 épocas\n",
+    "- **Recuperación automática**: Si se interrumpe, reanuda desde el último checkpoint\n",
+    "- **Configuración optimizada**: Batch size 8, workers 8 para mayor velocidad\n",
+    "- **Monitoreo en tiempo real**: Usa `show_training_status()` para ver progreso\n",
+    "\n",
+    "### 📊 **Comandos Útiles Durante el Entrenamiento:**\n",
+    "```python\n",
+    "# Ver estado del entrenamiento\n",
+    "show_training_status()\n",
+    "\n",
+    "# Hacer backup manual\n",
+    "backup_to_drive()\n",
+    "\n",
+    "# Verificar backups en Drive\n",
+    "monitor_training_progress()\n",
+    "```\n",
+    "\n",
+    "### ⚠️ **Importante:**\n",
+    "- **NO cierres la pestaña** de Colab durante el entrenamiento\n",
+    "- **Los backups se hacen automáticamente** cada 5 épocas\n",
+    "- **Si se interrumpe**, simplemente ejecuta de nuevo y reanudará automáticamente\n",
+    "- **Los checkpoints se guardan en**: `/content/drive/MyDrive/aerial-wildlife-count-results/deformable_detr_v1/`\n",
+    "\n",
+    "### 🎯 **Optimizaciones de Velocidad:**\n",
+    "- **Batch size**: 8 (vs 4 original)\n",
+    "- **Val batch size**: 4 (vs 2 original)\n",
+    "- **Workers**: 8 (vs 4 original)\n",
+    "- **Save period**: 1 época (vs 10 original)\n",
+    "- **Early stopping**: 5 épocas de paciencia\n"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## 🎉 ¡Entrenamiento Completado!\n",
+    "\n",
+    "### 📋 Resumen del Entrenamiento\n",
+    "- **Modelo**: Deformable DETR con backbone {detr_config.backbone}\n",
+    "- **Tamaño de imagen**: {detr_config.imgsz}x{detr_config.imgsz}\n",
+    "- **Épocas**: {detr_config.epochs}\n",
+    "- **Early Stopping**: {detr_config.patience} épocas de paciencia\n",
+    "- **Clases detectadas**: {len(detr_config.classes)} especies de animales\n",
+    "\n",
+    "### 📊 Próximos Pasos\n",
+    "1. **Evaluar métricas**: Revisar mAP, precision, recall\n",
+    "2. **Ajustar hiperparámetros**: Si es necesario mejorar el rendimiento\n",
+    "3. **Exportar modelo**: Convertir a ONNX o TorchScript para deployment\n",
+    "4. **Probar en nuevas imágenes**: Validar en datos no vistos\n",
+    "\n",
+    "### 🔧 Configuración Personalizada\n",
+    "Para modificar parámetros, edita la clase `DeformableDETRConfig` en la celda de configuración:\n",
+    "- Cambiar backbone: `\"swin_t\"` o `\"resnet50\"`\n",
+    "- Ajustar épocas: `epochs = 100`\n",
+    "- Modificar tamaño de imagen: `imgsz = 1024`\n",
+    "- Cambiar batch size: `batch_size = 8`\n",
+    "- Ajustar early stopping: `patience = 10` (más paciencia) o `patience = 3` (menos paciencia)\n",
+    "\n",
+    "### 📚 Recursos Adicionales\n",
+    "- [Documentación MMDetection](https://mmdetection.readthedocs.io/)\n",
+    "- [Deformable DETR Paper](https://arxiv.org/abs/2010.04159)\n",
+    "- [DETR Paper](https://arxiv.org/abs/2005.12872)\n"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "6681f12a",
+   "metadata": {},
+   "source": [
+    "## 💾 Guardar y Descargar Resultados"
+   ]
+  }
+ ],
+ "metadata": {
+  "language_info": {
+   "name": "python"
+  }
+ },
+ "nbformat": 4,
+ "nbformat_minor": 5
+}
