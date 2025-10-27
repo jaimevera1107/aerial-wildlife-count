@@ -128,3 +128,4 @@ class YOLOConfig:
 
 # Instancia global de configuración
 yolo_config = YOLOConfig()
+
