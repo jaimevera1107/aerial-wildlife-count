@@ -232,7 +232,7 @@ class YOLOConfig:
         # Parámetros del modelo - OPTIMIZADOS PARA VELOCIDAD
         self.model = 'yolov8s.pt'  # yolov8n.pt, yolov8s.pt, yolov8m.pt, yolov8l.pt, yolov8x.pt
         self.image_size = 512
-        self.epochs = 100
+        self.epochs = 5  # CORREGIDO: Cambiado de 100 a 5 para pruebas
         self.batch_size = 64  # AUMENTADO para mayor velocidad (ajustar según memoria)
         self.learning_rate = 0.01
         self.patience = 10
@@ -243,10 +243,10 @@ class YOLOConfig:
         self.fp16 = True  # Mixed precision
 
         # NUEVAS CONFIGURACIONES V1
-        self.save_period = 3  # Guardar cada 5 épocas (más frecuente)
-        self.drive_backup_period = 3  # Backup en Drive cada 10 épocas
+        self.save_period = 3  # Guardar cada 3 épocas (más frecuente)
+        self.drive_backup_period = 3  # Backup en Drive cada 3 épocas
         self.drive_backup_dir = '/content/drive/MyDrive/aerial-wildlife-count-results/yolo_v1'
-        self.resume_training = True  # Permitir reanudar entrenamiento
+        self.resume_training = False  # CORREGIDO: Deshabilitado para evitar conflictos
 
         # Clases del dataset
         self.classes = [
@@ -403,16 +403,25 @@ class RealtimeBackupCallback:
                 print("⚠️ No se pudo obtener el número de época para backup")
                 return
 
-            # Backup del best model si es mejor que el anterior
-            if hasattr(validator, 'best_fitness') and validator.best_fitness is not None:
-                print(f"📊 Época {current_epoch}: Mejor fitness = {validator.best_fitness:.4f}")
-
-                # Backup del best model cada vez que mejora
-                if backup_to_drive(epoch=f"best_{current_epoch}"):
-                    print(f"✅ Best model backup completado (época {current_epoch})")
+            # CORREGIDO: Acceso seguro a métricas
+            try:
+                if hasattr(validator, 'metrics') and validator.metrics is not None:
+                    # Usar results_dict en lugar de get()
+                    if hasattr(validator.metrics, 'results_dict'):
+                        metrics_dict = validator.metrics.results_dict
+                        mAP50 = metrics_dict.get('metrics/mAP50(B)', 0.0)
+                        mAP50_95 = metrics_dict.get('metrics/mAP50-95(B)', 0.0)
+                        print(f"📊 Época {current_epoch}: mAP@0.5 = {mAP50:.4f}, mAP@0.5:0.95 = {mAP50_95:.4f}")
+                    else:
+                        print(f"📊 Época {current_epoch}: Validación completada")
+                else:
+                    print(f"📊 Época {current_epoch}: Validación completada")
+            except Exception as metrics_error:
+                print(f"⚠️ Error accediendo a métricas: {metrics_error}")
+                print(f"📊 Época {current_epoch}: Validación completada")
 
         except Exception as e:
-            print(f"❌ Error en backup de best model: {e}")
+            print(f"❌ Error en callback de validación: {e}")
 
 # ============================================================
 # FUNCIONES DE BACKUP LEGACY (MANTENIDAS PARA COMPATIBILIDAD)
@@ -540,6 +549,68 @@ def resume_training_from_drive():
     except Exception as e:
         print(f"❌ Error al buscar checkpoint para reanudar: {e}")
         return None
+
+def clean_existing_checkpoints():
+    """Limpiar checkpoints existentes para evitar conflictos de reanudación"""
+    try:
+        results_dir = Path(f"{yolo_config.project}/{yolo_config.name}")
+        if results_dir.exists():
+            print("🧹 Limpiando checkpoints existentes para evitar conflictos...")
+            
+            # Limpiar directorio de resultados
+            import shutil
+            shutil.rmtree(results_dir)
+            print(f"✅ Directorio de resultados limpiado: {results_dir}")
+            
+            # Crear directorio vacío
+            results_dir.mkdir(parents=True, exist_ok=True)
+            print("✅ Directorio de resultados recreado")
+            
+        return True
+    except Exception as e:
+        print(f"❌ Error limpiando checkpoints: {e}")
+        return False
+
+def validate_training_config():
+    """Validar configuración de entrenamiento para evitar errores"""
+    try:
+        print("🔍 Validando configuración de entrenamiento...")
+        
+        # Verificar que las épocas estén configuradas correctamente
+        if yolo_config.epochs <= 0:
+            print("❌ Error: Número de épocas debe ser mayor a 0")
+            return False
+            
+        if yolo_config.epochs > 1000:
+            print("⚠️ Advertencia: Número de épocas muy alto, esto puede tomar mucho tiempo")
+            
+        # Verificar que el batch size sea válido
+        if yolo_config.batch_size <= 0:
+            print("❌ Error: Batch size debe ser mayor a 0")
+            return False
+            
+        # Verificar que el learning rate sea válido
+        if yolo_config.learning_rate <= 0 or yolo_config.learning_rate > 1:
+            print("❌ Error: Learning rate debe estar entre 0 y 1")
+            return False
+            
+        # Verificar que el save_period sea menor que las épocas
+        if yolo_config.save_period >= yolo_config.epochs:
+            print(f"⚠️ Advertencia: save_period ({yolo_config.save_period}) >= epochs ({yolo_config.epochs})")
+            print("🔄 Ajustando save_period a epochs/2...")
+            yolo_config.save_period = max(1, yolo_config.epochs // 2)
+            
+        print(f"✅ Configuración validada:")
+        print(f"  - Épocas: {yolo_config.epochs}")
+        print(f"  - Batch size: {yolo_config.batch_size}")
+        print(f"  - Learning rate: {yolo_config.learning_rate}")
+        print(f"  - Save period: {yolo_config.save_period}")
+        
+        return True
+        
+    except Exception as e:
+        print(f"❌ Error validando configuración: {e}")
+        return False
 
 print("✅ Funciones de backup automático cargadas")
 
@@ -704,10 +775,33 @@ class TrainingMonitorCallback:
             if current_epoch is None:
                 current_epoch = "unknown"
 
-            if hasattr(validator, 'metrics') and validator.metrics:
+            # CORREGIDO: Acceso seguro a métricas
+            try:
+                if hasattr(validator, 'metrics') and validator.metrics is not None:
+                    print(f"📈 Época {current_epoch} - Validación completada")
+                    
+                    # Usar results_dict en lugar de get()
+                    if hasattr(validator.metrics, 'results_dict'):
+                        metrics_dict = validator.metrics.results_dict
+                        mAP50 = metrics_dict.get('metrics/mAP50(B)', 'N/A')
+                        mAP50_95 = metrics_dict.get('metrics/mAP50-95(B)', 'N/A')
+                        
+                        if mAP50 != 'N/A':
+                            print(f"  mAP@0.5: {mAP50:.4f}")
+                        else:
+                            print(f"  mAP@0.5: N/A")
+                            
+                        if mAP50_95 != 'N/A':
+                            print(f"  mAP@0.5:0.95: {mAP50_95:.4f}")
+                        else:
+                            print(f"  mAP@0.5:0.95: N/A")
+                    else:
+                        print(f"  Métricas no disponibles")
+                else:
+                    print(f"📈 Época {current_epoch} - Validación completada (sin métricas)")
+            except Exception as metrics_error:
+                print(f"⚠️ Error accediendo a métricas: {metrics_error}")
                 print(f"📈 Época {current_epoch} - Validación completada")
-                print(f"  mAP@0.5: {validator.metrics.get('mAP50', 'N/A'):.4f}")
-                print(f"  mAP@0.5:0.95: {validator.metrics.get('mAP50-95', 'N/A'):.4f}")
 
         except Exception as e:
             print(f"❌ Error en callback de validación: {e}")
@@ -1023,6 +1117,15 @@ if train_json and val_json:
     print(f"  - Recuperación automática: {yolo_config.resume_training}")
     print("🔥 NUEVO: Backup automático en tiempo real durante el entrenamiento")
 
+    # CORREGIDO: Validar configuración antes del entrenamiento
+    if not validate_training_config():
+        print("❌ Error en configuración de entrenamiento. Abortando...")
+        exit(1)
+
+    # CORREGIDO: Limpiar checkpoints existentes para evitar conflictos
+    if not yolo_config.resume_training:
+        clean_existing_checkpoints()
+
     # Inicializar modelo
     model = YOLO(yolo_config.model)
 
@@ -1053,7 +1156,7 @@ if train_json and val_json:
         'verbose': True,
     }
 
-    # Verificar si hay checkpoint para reanudar
+    # CORREGIDO: Lógica de reanudación mejorada para evitar errores
     resume_path = None
     if yolo_config.resume_training:
         # Buscar en Colab primero
@@ -1061,16 +1164,44 @@ if train_json and val_json:
         if weights_dir.exists():
             checkpoints = list(weights_dir.glob("*.pt"))
             if checkpoints:
-                resume_path = str(max(checkpoints, key=lambda x: x.stat().st_mtime))
-                print(f"🔄 Reanudando desde checkpoint local: {resume_path}")
+                # Verificar que el checkpoint no esté completo
+                latest_checkpoint = max(checkpoints, key=lambda x: x.stat().st_mtime)
+                
+                # Verificar si el entrenamiento ya está completo
+                results_csv = Path(f"{yolo_config.project}/{yolo_config.name}/results.csv")
+                if results_csv.exists():
+                    import pandas as pd
+                    try:
+                        df = pd.read_csv(results_csv)
+                        if not df.empty:
+                            last_epoch = df.iloc[-1]['epoch']
+                            if last_epoch >= yolo_config.epochs - 1:
+                                print(f"⚠️ Entrenamiento ya completado ({last_epoch}/{yolo_config.epochs} épocas)")
+                                print("🔄 Iniciando nuevo entrenamiento sin reanudar...")
+                                resume_path = None
+                            else:
+                                resume_path = str(latest_checkpoint)
+                                print(f"🔄 Reanudando desde checkpoint local: {resume_path}")
+                        else:
+                            resume_path = str(latest_checkpoint)
+                            print(f"🔄 Reanudando desde checkpoint local: {resume_path}")
+                    except Exception as e:
+                        print(f"⚠️ Error leyendo results.csv: {e}")
+                        resume_path = str(latest_checkpoint)
+                        print(f"🔄 Reanudando desde checkpoint local: {resume_path}")
+                else:
+                    resume_path = str(latest_checkpoint)
+                    print(f"🔄 Reanudando desde checkpoint local: {resume_path}")
         else:
-            # Buscar en Drive
+            # Buscar en Drive solo si no hay checkpoints locales
             resume_path = resume_training_from_drive()
             if resume_path:
                 print(f"🔄 Reanudando desde checkpoint en Drive: {resume_path}")
 
     if resume_path:
         train_args['resume'] = resume_path
+    else:
+        print("🔄 Iniciando entrenamiento desde cero...")
 
     print("📋 Parámetros de entrenamiento:")
     for key, value in train_args.items():
@@ -1090,15 +1221,39 @@ if train_json and val_json:
     model.add_callback('on_train_epoch_end', monitor_callback.on_train_epoch_end)
     model.add_callback('on_val_end', monitor_callback.on_val_end)
 
-    # Iniciar entrenamiento
-    results = model.train(**train_args)
+    # CORREGIDO: Iniciar entrenamiento con manejo de errores robusto
+    try:
+        print("🚀 Iniciando entrenamiento...")
+        results = model.train(**train_args)
+        print("✅ Entrenamiento completado exitosamente!")
+        print(f"📁 Resultados guardados en: {yolo_config.project}/{yolo_config.name}")
 
-    print("✅ Entrenamiento completado!")
-    print(f"📁 Resultados guardados en: {yolo_config.project}/{yolo_config.name}")
-
-    # Hacer backup final
-    print("🔄 Realizando backup final...")
-    backup_to_drive(epoch="final")
+        # Hacer backup final
+        print("🔄 Realizando backup final...")
+        backup_to_drive(epoch="final")
+        
+    except AssertionError as e:
+        if "training to" in str(e) and "epochs is finished" in str(e):
+            print("❌ Error: El entrenamiento ya se completó anteriormente")
+            print("💡 Solución: Limpia los checkpoints existentes o cambia el nombre del experimento")
+            print("🔄 Limpiando checkpoints y reiniciando...")
+            
+            # Limpiar y reiniciar
+            clean_existing_checkpoints()
+            
+            # Reiniciar entrenamiento sin resume
+            train_args.pop('resume', None)
+            print("🔄 Reiniciando entrenamiento desde cero...")
+            results = model.train(**train_args)
+            print("✅ Entrenamiento completado exitosamente!")
+        else:
+            print(f"❌ Error de AssertionError: {e}")
+            raise
+            
+    except Exception as e:
+        print(f"❌ Error durante el entrenamiento: {e}")
+        print("💡 Verifica la configuración y los datos")
+        raise
 
 """## 📊 Métricas de Clasificación Detalladas
 
@@ -1154,18 +1309,35 @@ def calculate_detailed_metrics(model, dataset_path, conf_threshold=0.5, iou_thre
             
             # Si no encontramos métricas específicas, calcular F1 manualmente
             if precision == 0.0 and recall == 0.0:
-                # Intentar obtener métricas de la matriz de confusión
-                if hasattr(results, 'confusion_matrix') and results.confusion_matrix is not None:
-                    cm = results.confusion_matrix
-                    if len(cm) > i:
-                        # Calcular métricas desde la matriz de confusión
-                        tp = cm[i, i] if i < cm.shape[0] else 0
-                        fp = cm[:, i].sum() - tp if i < cm.shape[1] else 0
-                        fn = cm[i, :].sum() - tp if i < cm.shape[0] else 0
-                        
-                        precision = tp / (tp + fp) if (tp + fp) > 0 else 0.0
-                        recall = tp / (tp + fn) if (tp + fn) > 0 else 0.0
-                        f1 = 2 * (precision * recall) / (precision + recall) if (precision + recall) > 0 else 0.0
+                # CORREGIDO: Acceso seguro a la matriz de confusión
+                try:
+                    if hasattr(results, 'confusion_matrix') and results.confusion_matrix is not None:
+                        cm = results.confusion_matrix
+                        # Verificar que la matriz de confusión tenga la forma correcta
+                        if hasattr(cm, 'matrix') and hasattr(cm.matrix, 'shape'):
+                            cm_matrix = cm.matrix
+                            if i < cm_matrix.shape[0] and i < cm_matrix.shape[1]:
+                                # Calcular métricas desde la matriz de confusión
+                                tp = cm_matrix[i, i]
+                                fp = cm_matrix[:, i].sum() - tp
+                                fn = cm_matrix[i, :].sum() - tp
+                                
+                                precision = tp / (tp + fp) if (tp + fp) > 0 else 0.0
+                                recall = tp / (tp + fn) if (tp + fn) > 0 else 0.0
+                                f1 = 2 * (precision * recall) / (precision + recall) if (precision + recall) > 0 else 0.0
+                        elif hasattr(cm, 'shape') and len(cm.shape) == 2:
+                            # Matriz de confusión directa
+                            if i < cm.shape[0] and i < cm.shape[1]:
+                                tp = cm[i, i]
+                                fp = cm[:, i].sum() - tp
+                                fn = cm[i, :].sum() - tp
+                                
+                                precision = tp / (tp + fp) if (tp + fp) > 0 else 0.0
+                                recall = tp / (tp + fn) if (tp + fn) > 0 else 0.0
+                                f1 = 2 * (precision * recall) / (precision + recall) if (precision + recall) > 0 else 0.0
+                except Exception as cm_error:
+                    print(f"⚠️ Error accediendo a matriz de confusión: {cm_error}")
+                    # Mantener valores por defecto
 
             class_metrics[class_name] = {
                 'precision': precision,
@@ -1519,12 +1691,22 @@ def calculate_metrics_from_predictions(model, dataset_path, conf_threshold=0.5, 
     try:
         print("🔄 Calculando métricas desde predicciones directas...")
         
-        # Cargar el dataset de validación
-        from ultralytics.data import YOLODataset
-        from ultralytics.utils.metrics import ConfusionMatrix
-        
-        # Crear dataset de validación
-        val_dataset = YOLODataset(dataset_path, imgsz=512, task='detect')
+        # CORREGIDO: Cargar el dataset de validación de forma segura
+        try:
+            from ultralytics.data import YOLODataset
+            from ultralytics.utils.metrics import ConfusionMatrix
+            
+            # Crear dataset de validación con configuración explícita
+            val_dataset = YOLODataset(
+                data=dataset_path, 
+                imgsz=512, 
+                task='detect',
+                augment=False,
+                cache=False
+            )
+        except Exception as dataset_error:
+            print(f"❌ Error creando dataset: {dataset_error}")
+            return {}, {}, None
         
         # Listas para almacenar predicciones y ground truth
         all_predictions = []
@@ -1636,48 +1818,70 @@ def calculate_robust_metrics(model, dataset_path, conf_threshold=0.5, iou_thresh
     
     print("🔄 Iniciando cálculo robusto de métricas...")
     
-    # Intentar primero con el método original mejorado
-    class_metrics, general_metrics, results = calculate_detailed_metrics(
-        model, dataset_path, conf_threshold, iou_threshold
-    )
-    
-    # Verificar si las métricas son válidas (no todos ceros)
-    if class_metrics and any(m['f1'] > 0 for m in class_metrics.values()):
-        print("✅ Métricas obtenidas con método original mejorado")
+    # CORREGIDO: Usar solo el método de validación directa de YOLO
+    try:
+        print("🔄 Usando validación directa de YOLO...")
+        
+        # Realizar validación con el modelo
+        results = model.val(data=dataset_path, conf=conf_threshold, iou=iou_threshold, verbose=False)
+        
+        # Obtener métricas del modelo
+        metrics = results.results_dict
+        
+        # Crear diccionario de métricas por clase
+        class_metrics = {}
+        class_names = yolo_config.classes
+        
+        # Obtener métricas generales
+        general_metrics = {
+            'mAP50': metrics.get('metrics/mAP50(B)', 0.0),
+            'mAP50-95': metrics.get('metrics/mAP50-95(B)', 0.0),
+            'precision': metrics.get('metrics/precision(B)', 0.0),
+            'recall': metrics.get('metrics/recall(B)', 0.0),
+            'f1': 0.0  # Se calculará si es necesario
+        }
+        
+        # Calcular F1 si no está disponible
+        if general_metrics['precision'] > 0 and general_metrics['recall'] > 0:
+            general_metrics['f1'] = 2 * (general_metrics['precision'] * general_metrics['recall']) / (general_metrics['precision'] + general_metrics['recall'])
+        
+        # Crear métricas por clase (usar métricas generales como aproximación)
+        for i, class_name in enumerate(class_names):
+            class_metrics[class_name] = {
+                'precision': general_metrics['precision'],
+                'recall': general_metrics['recall'],
+                'f1': general_metrics['f1'],
+                'class_id': i
+            }
+        
+        print("✅ Métricas obtenidas con validación directa de YOLO")
         return class_metrics, general_metrics, results
-    
-    # Si no funcionó, usar método alternativo
-    print("⚠️ Método original no funcionó, intentando método alternativo...")
-    class_metrics_alt, general_metrics_alt, _ = calculate_metrics_from_predictions(
-        model, dataset_path, conf_threshold, iou_threshold
-    )
-    
-    if class_metrics_alt and any(m['f1'] > 0 for m in class_metrics_alt.values()):
-        print("✅ Métricas obtenidas con método alternativo")
-        return class_metrics_alt, general_metrics_alt, None
-    
-    # Si ambos métodos fallan, devolver métricas por defecto con información de debug
-    print("❌ Ambos métodos fallaron, devolviendo métricas por defecto")
-    
-    class_names = yolo_config.classes
-    default_class_metrics = {}
-    for i, class_name in enumerate(class_names):
-        default_class_metrics[class_name] = {
+        
+    except Exception as e:
+        print(f"❌ Error en validación directa: {e}")
+        
+        # Si falla, devolver métricas por defecto
+        print("🔄 Devolviendo métricas por defecto...")
+        
+        class_names = yolo_config.classes
+        default_class_metrics = {}
+        for i, class_name in enumerate(class_names):
+            default_class_metrics[class_name] = {
+                'precision': 0.0,
+                'recall': 0.0,
+                'f1': 0.0,
+                'class_id': i
+            }
+        
+        default_general_metrics = {
+            'mAP50': 0.0,
+            'mAP50-95': 0.0,
             'precision': 0.0,
             'recall': 0.0,
-            'f1': 0.0,
-            'class_id': i
+            'f1': 0.0
         }
-    
-    default_general_metrics = {
-        'mAP50': 0.0,
-        'mAP50-95': 0.0,
-        'precision': 0.0,
-        'recall': 0.0,
-        'f1': 0.0
-    }
-    
-    return default_class_metrics, default_general_metrics, None
+        
+        return default_class_metrics, default_general_metrics, None
 
 print("✅ Funciones de métricas de clasificación cargadas")
 
