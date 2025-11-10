@@ -16,12 +16,15 @@ COPY . /app/
 
 # Crear directorios necesarios en caso de que no existan
 RUN mkdir -p resources/uploads resources/outputs resources/logs
+# Dar permisos totales a las carpetas para evitar errores de escritura
+RUN chmod -R 777 resources
 
 # Exponer puerto para Gradio
 EXPOSE 7860
 
-# Variable obligatoria para Gradio en Spaces
+# Variables obligatorias para Hugging Face Spaces y Matplotlib
 ENV GRADIO_SERVER_NAME="0.0.0.0"
+ENV MPLCONFIGDIR="/tmp/matplotlib"
 
 # Comando de ejecución
 CMD ["python", "app.py"]
