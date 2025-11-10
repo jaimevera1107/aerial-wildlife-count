@@ -40,6 +40,10 @@ docker run -p 7860:7860 herdnet-app
 Luego abrir en el navegador:  
 http://localhost:7860
 
+## Artefactos
+Se puede encontrar en el enlace compartido de Google Drive:
+https://drive.google.com/open?id=1oD3-ZtvEfPJtfDrBbefJ2JLMIWksVBK6&usp=drive_fs
+
 ## Créditos
 
 Universidad de los Andes - Maestría en Inteligencia Artificial  
