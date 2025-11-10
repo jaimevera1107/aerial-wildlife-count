@@ -1,0 +1,8 @@
+__pycache__/
+*.pyc
+*.log
+*.csv
+*.jpg
+resources/logs/
+resources/outputs/
+resources/uploads/
