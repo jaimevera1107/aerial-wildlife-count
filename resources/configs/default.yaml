@@ -1,0 +1,22 @@
+# ===========================================
+# Default Configuration for HerdNet Inference
+# ===========================================
+
+model:
+  name: "herdnet_fase1_best"
+  path: "resources/models/herdnet_best.pth"
+  device: "cuda"           # "cuda" o "cpu"
+  patch_size: 512
+  overlap: 160
+  down_ratio: 2
+
+paths:
+  uploads_dir: "resources/uploads"
+  outputs_dir: "resources/outputs"
+  logs_dir: "resources/logs"
+
+inference:
+  save_plots: true
+  save_csv: true
+  save_thumbnails: false
+  verbose: true

@@ -1,0 +1,3 @@
+[2025-11-10 01:38:28,718] INFO - [LOGGER] Initialized → resources/logs\herdnet_infer_20251110_013828.log
+[2025-11-10 01:38:28,718] INFO - [INIT] Directorio de salida: resources/outputs\infer_20251110_013828
+[2025-11-10 01:38:28,927] INFO - [MODEL] Modelo HerdNet cargado (7 clases) desde resources/models/herdnet_best.pth

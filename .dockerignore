@@ -1,0 +1,11 @@
+.venv/
+__pycache__/
+resources/logs/
+resources/outputs/
+resources/uploads/
+*.log
+*.csv
+*.jpg
+*.jpeg
+*.png
+*.mp4

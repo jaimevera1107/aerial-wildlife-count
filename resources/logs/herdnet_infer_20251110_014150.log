@@ -1,0 +1,17 @@
+[2025-11-10 01:41:50,963] INFO - [LOGGER] Initialized → resources/logs\herdnet_infer_20251110_014150.log
+[2025-11-10 01:41:50,963] INFO - [INIT] Directorio de salida: resources/outputs\infer_20251110_014150
+[2025-11-10 01:41:51,182] INFO - [MODEL] Modelo HerdNet cargado (7 clases) desde resources/models/herdnet_best.pth
+[2025-11-10 01:41:56,004] INFO - [PATCH] dataset.imgs → ['tmp_20251110_014155.jpg']
+[2025-11-10 01:41:56,010] INFO - [PATCH] dataset.data.head():
+   images              annos  labels
+0       0  Point(x: 0, y: 0)       1
+[2025-11-10 01:41:56,011] INFO - [RUN] Iniciando inferencia sobre imagen individual...
+[2025-11-10 01:42:00,240] WARNING - [WARN] No se detectaron objetos o 'labels' ausente en detections.
+[2025-11-10 01:42:15,394] INFO - [PATCH] dataset.imgs → ['tmp_20251110_014215.jpg']
+[2025-11-10 01:42:15,397] INFO - [PATCH] dataset.data.head():
+   images              annos  labels
+0       0  Point(x: 0, y: 0)       1
+[2025-11-10 01:42:15,398] INFO - [RUN] Iniciando inferencia sobre imagen individual...
+[2025-11-10 01:42:53,129] INFO - [OUTPUT] Saved CSV → resources/outputs\infer_20251110_014150\detections.csv
+[2025-11-10 01:42:53,132] INFO - [COUNTS] {'waterbuck': 4}
+[2025-11-10 01:42:53,255] INFO - [CLEANUP] Archivo temporal eliminado: resources/uploads\tmp_20251110_014215.jpg

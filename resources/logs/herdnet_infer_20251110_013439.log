@@ -1,0 +1,4 @@
+[2025-11-10 01:34:39,297] INFO - [LOGGER] Initialized → resources/logs\herdnet_infer_20251110_013439.log
+[2025-11-10 01:34:39,298] INFO - [INIT] Directorio de salida: resources/outputs\infer_20251110_013439
+[2025-11-10 01:34:39,511] INFO - [MODEL] Modelo HerdNet cargado (7 clases) desde resources/models/herdnet_best.pth
+[2025-11-10 01:34:47,463] INFO - [RUN] Iniciando inferencia sobre imagen individual...
