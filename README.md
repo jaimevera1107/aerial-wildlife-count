@@ -1,35 +1,20 @@
 # Wildlife Detection and Counting System
 
-Este proyecto implementa un sistema de detección y conteo de mamíferos africanos en imágenes aéreas usando dos enfoques: detección con YOLOv11m y estimación por mapas de densidad con HerdNet. Incluye un pipeline reproducible para entrenamiento, evaluación, minería de negativos, ajuste fino y despliegue mediante Gradio y Docker.
+Este proyecto implementa un sistema de detección y conteo de mamíferos africanos en imágenes aéreas. Incluye un pipeline para entrenamiento, evaluación, minería de negativos, ajuste fino y despliegue mediante Gradio y Docker.
 
 ## Características principales
 - Entrenamiento incremental de HerdNet con hard negative mining
+- Entrenamiento de fine-tuning de HerdNet oficial
 - Entrenamiento completo de YOLOv11m sobre ULiège-AIR
 - Métricas: F1, precisión, recall, MAE y RMSE
-- Inferencia con tiling, NMS global y Test-Time Augmentation
 - Interfaz con Gradio
 - Despliegue portable con Docker
 - Hosting en Hugging Face Spaces
 
-## Estructura del proyecto
-```
-project/
-├── resources/
-│   ├── configs/
-│   ├── weights/
-│   └── figures/
-├── animaloc/
-├── inference/
-├── training/
-├── app.py
-├── Dockerfile
-└── README.md
-```
-
 ## Dependencias
 - Python 3.10+
 - PyTorch 2.x
-- Ultralytics (YOLOv8/11)
+- Ultralytics YOLOv8/11
 - Albumentations
 - OpenCV
 - NumPy
@@ -37,39 +22,75 @@ project/
 - Gradio
 - tqdm
 - Matplotlib
-- Docker (opcional)
+- Docker
 
-### Instalación
-```bash
+## Instalación
+```
 pip install -r requirements.txt
 ```
 
-## Entorno de ejecución
-Probado en:
-- Google Colab (GPU T4)
+## Entorno de ejecución probado
+- Google Colab con GPU T4
 - Hugging Face Spaces
-- Windows 11 + WSL2
-- Docker + PyTorch base image
+- Windows 11 con WSL2
+- Docker con imagen base de PyTorch
 
 ## Uso básico
 Iniciar la aplicación local:
-```bash
+```
 python app.py
 ```
 
 ## Despliegue con Docker
-```bash
+```
 docker build -t wildlife-detector .
 docker run -p 7860:7860 wildlife-detector
 ```
 
 ## Despliegue en Hugging Face
-1. Subir Dockerfile y app.py al repositório del Space
-2. Seleccionar “Docker” como runtime
-3. Activar GPU si es necesario
-4. El Space ejecutará automáticamente la app Gradio
+1. Subir Dockerfile y app.py al repositorio del Space
+2. Seleccionar Docker como runtime
+3. Activar GPU si se requiere
+4. El Space ejecutará la aplicación de forma automática
 
 ## Enlaces relevantes
 - Dataset ULiège-AIR: https://github.com/uliege-air/dataset
 - HerdNet (Delplanque et al., 2023)
 - Documentación YOLOv11: https://docs.ultralytics.com
+
+## Archivos clave
+- app.py: punto de entrada de la aplicación
+- Dockerfile: define la imagen base y dependencias
+- requirements.txt: especifica dependencias
+- resources/models/: modelos HerdNet en formato .pth
+
+## Requisitos de entorno
+- Docker Desktop o Docker con NVIDIA Container Toolkit
+- GPU con soporte CUDA (opcional)
+- Acceso a internet para el primer build
+
+## Construcción de imagen Docker
+Ubicarse en la raíz del proyecto y ejecutar:
+```
+docker build -t herdnet-app .
+```
+
+## Ejecución de la aplicación
+Con GPU:
+```
+docker run --gpus all -p 7860:7860 herdnet-app
+```
+En CPU:
+```
+docker run -p 7860:7860 herdnet-app
+```
+Abrir en el navegador:
+http://localhost:7860
+
+## Artefactos
+Disponible en:
+https://drive.google.com/open?id=1oD3-ZtvEfPJtfDrBbefJ2JLMIWksVBK6&usp=drive_fs
+
+## Créditos
+Universidad de los Andes - Maestría en Inteligencia Artificial  
+Grupo Proyecto Guacamaya (CINFONIA)
