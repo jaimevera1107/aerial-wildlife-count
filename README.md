@@ -93,6 +93,12 @@ docker run -p 7860:7860 wildlife-detector
 3. Activar GPU si se necesita.
 4. La app se ejecuta automáticamente.
 
+El repositorio incluye exactamente los mismos archivos usados en el Space oficial de Hugging Face. Puedes reproducir el entorno local o desplegarlo en otro Space utilizando el mismo Dockerfile, app.py y estructura de carpetas.
+
+```
+git clone https://huggingface.co/spaces/jaimevera1107/herdnet-app
+```
+
 ## Artefactos
 https://drive.google.com/drive/folders/1oD3-ZtvEfPJtfDrBbefJ2JLMIWksVBK6
 
