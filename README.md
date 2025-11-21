@@ -1,15 +1,37 @@
 # Wildlife Detection and Counting System
 
-Este proyecto implementa un sistema de detección y conteo de mamíferos africanos en imágenes aéreas. Incluye un pipeline para entrenamiento, evaluación, minería de negativos, ajuste fino y despliegue mediante Gradio y Docker.
+Sistema para detección y conteo de mamíferos africanos en imágenes aéreas. El proyecto incluye un pipeline reproducible para entrenamiento, evaluación, minería de negativos, ajuste fino de HerdNet y comparación con YOLOv11m. También integra una aplicación interactiva con Gradio y un despliegue portable mediante Docker y Hugging Face Spaces.
 
 ## Características principales
-- Entrenamiento incremental de HerdNet con hard negative mining
-- Entrenamiento de fine-tuning de HerdNet oficial
-- Entrenamiento completo de YOLOv11m sobre ULiège-AIR
-- Métricas: F1, precisión, recall, MAE y RMSE
-- Interfaz con Gradio
-- Despliegue portable con Docker
-- Hosting en Hugging Face Spaces
+- Entrenamiento progresivo de HerdNet con fases base, hard negative mining y fine-tuning.
+- Ajuste fino del modelo oficial de HerdNet publicado por Delplanque et al.
+- Entrenamiento completo de YOLOv11m sobre el dataset ULiège-AIR.
+- Métricas estandarizadas: F1, precisión, recall, MAE y RMSE.
+- Pipeline de inferencia con sliding window, NMS global y centroid matching.
+- Interfaz interactiva con Gradio.
+- Contenedorización con Docker.
+- Hosting en Hugging Face Spaces con opción GPU.
+
+## Enlaces del proyecto
+- **Repositorio HerdNet original:** https://github.com/Alexandre-Delplanque/HerdNet/tree/main
+- **Aplicación desplegada:** https://huggingface.co/spaces/jaimevera1107/herdnet-app
+- **Dataset ULiège-AIR:** https://dataverse.uliege.be/dataset.xhtml?persistentId=doi:10.58119/ULG/MIRUU5
+
+## Ejemplo visual
+![Ejemplo de imagen aérea](https://github.com/jaimevera1107/aerial-wildlife-count/blob/main/datos/image_2025-11-21_120159287.png?raw=true)
+
+## Estructura del repositorio
+```
+datos/          # Muestras del dataset
+inference/      # Scripts de inferencia y postprocesamiento
+modelos/        # Modelos finales y checkpoints
+notebooks/      # Entrenamiento y experimentos
+resources/      # Utilidades y configuraciones
+app.py          # App de inferencia con Gradio
+Dockerfile      # Imagen de despliegue
+requirements.txt# Dependencias
+README.md       # Documentación
+```
 
 ## Dependencias
 - Python 3.10+
@@ -20,77 +42,67 @@ Este proyecto implementa un sistema de detección y conteo de mamíferos african
 - NumPy
 - Pandas
 - Gradio
-- tqdm
 - Matplotlib
+- tqdm
 - Docker
 
-## Instalación
+Instalación:
 ```
 pip install -r requirements.txt
 ```
 
-## Entorno de ejecución probado
+## Entorno probado
 - Google Colab con GPU T4
-- Hugging Face Spaces
-- Windows 11 con WSL2
-- Docker con imagen base de PyTorch
+- Hugging Face Spaces con Docker
+- Windows 11 + WSL2
+- Docker Desktop con NVIDIA Container Toolkit
 
-## Uso básico
-Iniciar la aplicación local:
+## Ejecutar aplicación local
 ```
 python app.py
 ```
+Abrir:
+```
+http://localhost:7860
+```
 
-## Despliegue con Docker
+Salida:
+- Imagen anotada
+- Conteo global y por especie
+- JSON con predicciones
+
+## Docker
+### Construcción
 ```
 docker build -t wildlife-detector .
+```
+
+### Ejecución con GPU
+```
+docker run --gpus all -p 7860:7860 wildlife-detector
+```
+
+### CPU
+```
 docker run -p 7860:7860 wildlife-detector
 ```
 
-## Despliegue en Hugging Face
-1. Subir Dockerfile y app.py al repositorio del Space
-2. Seleccionar Docker como runtime
-3. Activar GPU si se requiere
-4. El Space ejecutará la aplicación de forma automática
-
-## Enlaces relevantes
-- Dataset ULiège-AIR: https://github.com/uliege-air/dataset
-- HerdNet (Delplanque et al., 2023)
-- Documentación YOLOv11: https://docs.ultralytics.com
-
-## Archivos clave
-- app.py: punto de entrada de la aplicación
-- Dockerfile: define la imagen base y dependencias
-- requirements.txt: especifica dependencias
-- resources/models/: modelos HerdNet en formato .pth
-
-## Requisitos de entorno
-- Docker Desktop o Docker con NVIDIA Container Toolkit
-- GPU con soporte CUDA (opcional)
-- Acceso a internet para el primer build
-
-## Construcción de imagen Docker
-Ubicarse en la raíz del proyecto y ejecutar:
-```
-docker build -t herdnet-app .
-```
-
-## Ejecución de la aplicación
-Con GPU:
-```
-docker run --gpus all -p 7860:7860 herdnet-app
-```
-En CPU:
-```
-docker run -p 7860:7860 herdnet-app
-```
-Abrir en el navegador:
-http://localhost:7860
+## Hugging Face Spaces
+1. Crear Space en modo Docker.
+2. Subir `Dockerfile`, `app.py`, `requirements.txt`, `resources/`, `modelos/`.
+3. Activar GPU si se necesita.
+4. La app se ejecuta automáticamente.
 
 ## Artefactos
-Disponible en:
-https://drive.google.com/open?id=1oD3-ZtvEfPJtfDrBbefJ2JLMIWksVBK6&usp=drive_fs
+https://drive.google.com/drive/folders/1oD3-ZtvEfPJtfDrBbefJ2JLMIWksVBK6
 
 ## Créditos
-Universidad de los Andes - Maestría en Inteligencia Artificial  
-Grupo Proyecto Guacamaya (CINFONIA)
+Proyecto desarrollado en la  
+**Maestría en Inteligencia Artificial – Universidad de los Andes**  
+Grupo **Proyecto Guacamaya (CINFONIA)**
+
+Contribuidores:
+- Jaime A. Vera
+- Julián F. Cujabante
+- Rafael A. Ortega
+- Uldy D. Paloma Rozo
