@@ -112,3 +112,6 @@ Contribuidores:
 - Julián F. Cujabante
 - Rafael A. Ortega
 - Uldy D. Paloma Rozo
+
+## Acuerdo de licencia/Uso de Datos
+CC BY-NC-SA 4.0
