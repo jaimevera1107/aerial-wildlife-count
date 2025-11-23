@@ -1,3 +1,5 @@
 # Archivos de sistema macOS
 .DS_Store
 
+# Datos grandes controlados por DVC
+/data/

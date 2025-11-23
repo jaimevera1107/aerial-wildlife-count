@@ -1,0 +1,5 @@
+outs:
+- md5: c787b42aea9e57b02b273875444ea57f
+  size: 78678824
+  hash: md5
+  path: herdnet_best.pth
