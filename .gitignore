@@ -9,3 +9,4 @@ notebooks/HerdNet
 
 # Datos grandes controlados por DVC
 /data/
+/data
