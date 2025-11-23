@@ -1,5 +1,9 @@
 # Archivos de sistema macOS
 .DS_Store
 
+# Archivos temporales
+.ipynb_checkpoints
+workspace/
+
 # Datos grandes controlados por DVC
 /data/
