@@ -4,6 +4,7 @@
 # Archivos temporales
 .ipynb_checkpoints
 workspace/
+tools/HerdNet
 
 # Datos grandes controlados por DVC
 /data/
