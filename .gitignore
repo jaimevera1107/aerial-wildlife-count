@@ -1,10 +1,11 @@
-# Archivos de sistema macOS
+]# Archivos de sistema macOS
 .DS_Store
 
 # Archivos temporales
 .ipynb_checkpoints
 workspace/
 tools/HerdNet
+notebooks/HerdNet
 
 # Datos grandes controlados por DVC
 /data/
