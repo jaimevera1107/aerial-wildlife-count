@@ -114,38 +114,46 @@ def run_inference(image: Image.Image):
 # CSS Moderno estilo Wildlife Vision
 # ===============================================================
 custom_css = """
-/* Variables de color */
+/* Variables de color - Mejorado contraste */
 :root {
     --bg-primary: #0a0a0a;
     --bg-secondary: #141414;
-    --bg-card: #1a1a1a;
-    --border-color: #2a2a2a;
+    --bg-card: #1c1c1c;
+    --border-color: #333333;
     --accent-gold: #d4a439;
     --accent-gold-light: #e5b84a;
-    --text-primary: #f5f5f5;
-    --text-secondary: #a0a0a0;
+    --text-primary: #ffffff;
+    --text-secondary: #c0c0c0;
+    --text-muted: #888888;
     --success-green: #22c55e;
+}
+
+/* Eliminar scroll horizontal */
+html, body {
+    overflow-x: hidden !important;
 }
 
 /* Fondo general */
 .gradio-container {
     background: var(--bg-primary) !important;
     max-width: 1400px !important;
+    overflow-x: hidden !important;
 }
 
-/* Header principal */
+/* Header principal - sin overflow */
 #header-container {
     background: linear-gradient(180deg, var(--bg-secondary) 0%, var(--bg-primary) 100%);
     border-bottom: 1px solid var(--border-color);
-    padding: 1rem 2rem;
-    margin: -1rem -1rem 1.5rem -1rem;
+    padding: 1rem 1.5rem;
+    margin: 0 0 1.5rem 0;
     display: flex;
     align-items: center;
     justify-content: space-between;
+    border-radius: 12px;
 }
 
 .header-title {
-    font-size: 1.8rem !important;
+    font-size: 1.6rem !important;
     font-weight: 700 !important;
     color: var(--text-primary) !important;
     margin: 0 !important;
@@ -155,20 +163,20 @@ custom_css = """
 }
 
 .header-title .logo {
-    width: 42px;
-    height: 42px;
+    width: 40px;
+    height: 40px;
     background: linear-gradient(135deg, var(--accent-gold) 0%, var(--accent-gold-light) 100%);
     border-radius: 10px;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 24px;
+    font-size: 22px;
 }
 
 .header-subtitle {
     color: var(--text-secondary) !important;
     font-size: 0.85rem !important;
-    margin: 0 !important;
+    margin: 0.2rem 0 0 0 !important;
 }
 
 .model-status {
@@ -177,6 +185,7 @@ custom_css = """
     gap: 8px;
     color: var(--text-secondary);
     font-size: 0.9rem;
+    font-weight: 500;
 }
 
 .status-dot {
@@ -371,23 +380,71 @@ custom_css = """
     }
 }
 
-/* Títulos de sección */
+/* Títulos de sección - MÁS GRANDES */
 .section-title {
     color: var(--text-primary) !important;
-    font-size: 1.2rem !important;
-    font-weight: 600 !important;
+    font-size: 1.6rem !important;
+    font-weight: 700 !important;
     margin: 1.5rem 0 1rem 0 !important;
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 12px;
+    letter-spacing: -0.02em;
 }
 
 .section-title .icon {
     color: var(--accent-gold);
+    font-size: 1.4rem;
 }
 
-/* Labels de Gradio */
-label {
+/* Footer/Copyright */
+.footer-copyright {
+    text-align: center;
+    padding: 2rem 1rem;
+    margin-top: 2rem;
+    border-top: 1px solid var(--border-color);
+    color: var(--text-muted);
+    font-size: 0.9rem;
+}
+
+.footer-copyright .team-title {
+    color: var(--text-secondary);
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+.footer-copyright .team-members {
+    color: var(--accent-gold);
+    font-weight: 500;
+    line-height: 1.6;
+}
+
+.footer-copyright .university {
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+    margin-top: 0.5rem;
+    font-weight: 500;
+}
+
+.footer-copyright .year {
+    margin-top: 0.8rem;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+}
+
+/* Labels de Gradio - Mejor contraste */
+label, .label-wrap span {
+    color: var(--text-secondary) !important;
+    font-weight: 500 !important;
+}
+
+/* Textos generales */
+p, span, div {
+    color: var(--text-primary);
+}
+
+/* Input labels específicos */
+.wrap label {
     color: var(--text-secondary) !important;
     font-weight: 500 !important;
 }
@@ -406,6 +463,203 @@ th {
     background: var(--bg-primary) !important;
     color: var(--accent-gold) !important;
 }
+
+/* Acordeón - mejor contraste */
+.accordion {
+    background: var(--bg-card) !important;
+    border: 1px solid var(--border-color) !important;
+}
+
+.accordion button {
+    color: var(--text-primary) !important;
+}
+
+.accordion button span {
+    color: var(--text-primary) !important;
+}
+
+/* Markdown content */
+.prose, .markdown-text {
+    color: var(--text-primary) !important;
+}
+
+.prose p, .markdown-text p {
+    color: var(--text-secondary) !important;
+}
+
+.prose strong, .markdown-text strong {
+    color: var(--text-primary) !important;
+}
+
+/* Fix placeholder text */
+input::placeholder, textarea::placeholder {
+    color: var(--text-muted) !important;
+}
+
+/* Contenedor principal sin scroll */
+.contain {
+    overflow-x: hidden !important;
+}
+
+/* Mensaje vacío con mejor contraste */
+.empty-message {
+    color: var(--text-secondary) !important;
+}
+
+/* File upload labels */
+.file-preview span {
+    color: var(--text-secondary) !important;
+}
+
+/* Botón dentro de upload */
+.upload-button {
+    color: var(--text-secondary) !important;
+}
+
+/* Iconos y textos de Gradio */
+.svelte-1p9xokt, .wrap span {
+    color: var(--text-secondary) !important;
+}
+
+/* === CRÍTICO: Arreglar labels con fondo blanco === */
+/* Labels de imagen */
+.image-container label,
+.image-frame label,
+[data-testid="image"] label,
+.gr-image label,
+.upload-container label {
+    background: transparent !important;
+    background-color: transparent !important;
+    color: var(--text-secondary) !important;
+}
+
+/* Labels con fondo blanco - selector universal */
+span.svelte-s1r2yt,
+label.svelte-s1r2yt,
+div.svelte-s1r2yt,
+.label-wrap,
+.label-wrap span,
+.block label span {
+    background: transparent !important;
+    background-color: transparent !important;
+    color: var(--text-secondary) !important;
+}
+
+/* Cualquier label o span dentro de blocks */
+.block label,
+.block label span,
+.block .label-wrap,
+.block .label-wrap span,
+.wrap > label,
+.wrap > label span {
+    background: transparent !important;
+    background-color: transparent !important;
+    color: var(--text-secondary) !important;
+}
+
+/* Labels específicos de componentes de imagen */
+.image label span,
+.gr-box label span,
+.gr-form label span,
+.gr-panel label span {
+    background: transparent !important;
+    background-color: transparent !important;
+    color: var(--text-secondary) !important;
+}
+
+/* Forzar en todos los labels dentro del container */
+.gradio-container label,
+.gradio-container label span,
+.gradio-container .label-wrap,
+.gradio-container .label-wrap span {
+    background: transparent !important;
+    background-color: transparent !important;
+    color: var(--text-secondary) !important;
+}
+
+/* Selector muy específico para etiquetas flotantes */
+[class*="label"],
+[class*="Label"] {
+    background: transparent !important;
+    color: var(--text-secondary) !important;
+}
+
+/* File labels también */
+.file-preview label,
+.file label,
+[data-testid="file"] label {
+    background: transparent !important;
+    color: var(--text-secondary) !important;
+}
+
+/* Inputs y textareas fondo oscuro */
+input, textarea, select {
+    background: var(--bg-secondary) !important;
+    color: var(--text-primary) !important;
+    border-color: var(--border-color) !important;
+}
+
+/* Dropdown/select oscuro */
+.dropdown, .choices, .choices__inner {
+    background: var(--bg-secondary) !important;
+    color: var(--text-primary) !important;
+}
+
+/* ===== FIX DEFINITIVO: Labels con pill/badge ===== */
+/* Estas son las clases exactas de Gradio para los labels */
+.label-wrap {
+    background: #1a1a1a !important;
+    background-color: #1a1a1a !important;
+}
+
+.label-wrap > span {
+    background: #1a1a1a !important;
+    background-color: #1a1a1a !important;
+    color: #c0c0c0 !important;
+    border: none !important;
+}
+
+/* Target directo a los span dentro de labels de imagen */
+[data-testid="block"] .label-wrap span,
+.block .label-wrap span,
+.wrap .label-wrap span {
+    background: #1a1a1a !important;
+    background-color: #1a1a1a !important;
+    color: #c0c0c0 !important;
+}
+
+/* Selector universal para cualquier span que sea label */
+span[data-testid="block-label"],
+.block-label,
+.svelte-1gfkn6j {
+    background: #1a1a1a !important;
+    background-color: #1a1a1a !important;
+    color: #c0c0c0 !important;
+}
+
+/* Específico para componentes Image */
+.image-container .label-wrap span,
+.gr-image .label-wrap span {
+    background: #1a1a1a !important;
+    color: #c0c0c0 !important;
+}
+
+/* Máxima prioridad - selector de todos los spans en wraps */
+div.wrap span.svelte-1gfkn6j,
+div span.svelte-1gfkn6j,
+span.svelte-1gfkn6j {
+    background: #1a1a1a !important;
+    background-color: #1a1a1a !important;
+    color: #c0c0c0 !important;
+    border: 1px solid #333333 !important;
+}
+
+/* File component labels */
+.file .label-wrap span,
+[data-testid="file"] .label-wrap span {
+    background: #1a1a1a !important;
+    color: #c0c0c0 !important;
+}
 """
 
 # ===============================================================
@@ -417,14 +671,36 @@ with gr.Blocks(
         secondary_hue=gr.themes.colors.gray,
         neutral_hue=gr.themes.colors.gray,
     ).set(
+        # Fondos principales
         body_background_fill="#0a0a0a",
         body_background_fill_dark="#0a0a0a",
         block_background_fill="#1a1a1a",
         block_background_fill_dark="#1a1a1a",
-        block_border_color="#2a2a2a",
-        block_border_color_dark="#2a2a2a",
+        block_border_color="#333333",
+        block_border_color_dark="#333333",
+        # Inputs
         input_background_fill="#141414",
         input_background_fill_dark="#141414",
+        input_border_color="#333333",
+        input_border_color_dark="#333333",
+        # Labels - FONDO TRANSPARENTE
+        block_label_background_fill="transparent",
+        block_label_background_fill_dark="transparent",
+        block_label_border_color="transparent",
+        block_label_border_color_dark="transparent",
+        block_label_text_color="#c0c0c0",
+        block_label_text_color_dark="#c0c0c0",
+        # Textos
+        body_text_color="#ffffff",
+        body_text_color_dark="#ffffff",
+        body_text_color_subdued="#888888",
+        body_text_color_subdued_dark="#888888",
+        # Bordes
+        border_color_primary="#333333",
+        border_color_primary_dark="#333333",
+        # Secundarios
+        background_fill_secondary="#141414",
+        background_fill_secondary_dark="#141414",
     ),
     css=custom_css,
     title="Wildlife Vision - Detección de Fauna Africana"
@@ -506,6 +782,21 @@ with gr.Blocks(
         inputs=image_input,
         outputs=[image_output, counts_html, download_counts, download_detections],
     )
+
+    # Footer con copyright
+    gr.HTML("""
+        <div class="footer-copyright">
+            <div class="team-title">🦁 Desarrollado por</div>
+            <div class="team-members">
+                Julian F. Cujabante Villamil &nbsp;•&nbsp; 
+                Rafael A. Ortega Pabón &nbsp;•&nbsp; 
+                Uldy D. Paloma Rozo &nbsp;•&nbsp; 
+                Jaime A. Vera Jaramillo
+            </div>
+            <div class="university">Universidad de los Andes</div>
+            <div class="year">© 2025 - Proyecto de Detección de Fauna Africana</div>
+        </div>
+    """)
 
 if __name__ == "__main__":
     demo.launch(
