@@ -1,0 +1,46 @@
+# ===========================================
+# Dockerfile para Apple Silicon (ARM64/M1/M2/M3)
+# Optimizado para desarrollo local
+# ===========================================
+
+FROM python:3.11-slim
+
+# Establecer directorio de trabajo
+WORKDIR /app
+
+# Instalar dependencias del sistema
+RUN apt-get update && apt-get install -y \
+    git \
+    ffmpeg \
+    libsm6 \
+    libxext6 \
+    libgl1 \
+    && rm -rf /var/lib/apt/lists/*
+
+# Copiar requirements y modificar para ARM64
+COPY requirements.txt /app/
+
+# Instalar dependencias (PyTorch CPU para ARM64)
+RUN pip install --upgrade pip && \
+    # Instalar PyTorch CPU (compatible con ARM64)
+    pip install torch torchvision --index-url https://download.pytorch.org/whl/cpu && \
+    # Instalar resto de dependencias (excluyendo torch/torchvision que ya instalamos)
+    grep -v "^torch" requirements.txt | pip install -r /dev/stdin
+
+# Copiar el proyecto
+COPY . /app/
+
+# Crear directorios necesarios
+RUN mkdir -p resources/uploads resources/outputs resources/logs && \
+    chmod -R 777 resources
+
+# Exponer puerto para Gradio
+EXPOSE 7860
+
+# Variables de entorno
+ENV GRADIO_SERVER_NAME="0.0.0.0"
+ENV MPLCONFIGDIR="/tmp/matplotlib"
+
+# Comando de ejecución
+CMD ["python", "app.py"]
+

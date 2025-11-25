@@ -1,11 +1,42 @@
+# Entorno virtual y cache
 .venv/
 __pycache__/
+*.pyc
+.pytest_cache/
+
+# Datos de entrenamiento (NO necesarios para inferencia)
+data/
+*.dvc
+.dvc/
+
+# Notebooks (solo desarrollo)
+notebooks/
+
+# Logs y outputs temporales
 resources/logs/
 resources/outputs/
 resources/uploads/
+
+# Archivos multimedia temporales
 *.log
 *.csv
 *.jpg
 *.jpeg
 *.png
 *.mp4
+*.JPG
+*.JPEG
+*.PNG
+
+# Git y documentación
+.git/
+.gitignore
+*.md
+
+# Modelos duplicados (usar solo resources/models/)
+modelos/
+
+# Herramientas de desarrollo
+tools/HerdNet/build/
+tools/HerdNet/*.egg-info/
+*.egg-info/
