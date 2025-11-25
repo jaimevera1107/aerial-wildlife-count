@@ -40,15 +40,31 @@ SPECIES_EMOJI = {
 
 # Información del modelo
 MODEL_INFO = """
-| Característica | Valor |
-|----------------|-------|
-| **Modelo** | HerdNet (FPN + Density Maps) |
-| **Dataset** | ULiège-AIR (6 especies) |
-| **F1-score** | 0.8405 |
-| **Precision** | 0.8407 |
-| **Recall** | 0.8404 |
+### Arquitectura y datos
+- **Modelo:** HerdNet (FPN + Density Maps)
+- **Dataset:** ULiège-AIR (6 especies + background)
+- **Última actualización:** 07 Nov 2025
 
-**Especies detectables:** Buffalo, Elephant, Kob, Topi, Warthog, Waterbuck
+### Desempeño general (Fine-Tuning oficial)
+
+| Métrica | Valor |
+|---------|-------|
+| F1-score | 0.8405 |
+| Precision | 0.8407 |
+| Recall | 0.8404 |
+| MAE | 1.8023 |
+| RMSE | 3.4892 |
+
+### Matriz de confusión (normalizada)
+
+| Real \\ Predicha | buffalo | elephant | kob | topi | warthog | waterbuck |
+|------------------|---------|----------|-----|------|---------|-----------|
+| **buffalo** | 0.94 | 0.00 | 0.05 | 0.01 | 0.00 | 0.00 |
+| **elephant** | 0.01 | 0.91 | 0.00 | 0.07 | 0.01 | 0.00 |
+| **kob** | 0.08 | 0.00 | 0.92 | 0.00 | 0.00 | 0.00 |
+| **topi** | 0.03 | 0.00 | 0.00 | 0.94 | 0.03 | 0.00 |
+| **warthog** | 0.06 | 0.06 | 0.06 | 0.00 | 0.81 | 0.00 |
+| **waterbuck** | 0.00 | 0.00 | 0.00 | 0.00 | 0.00 | 1.00 |
 """
 
 
