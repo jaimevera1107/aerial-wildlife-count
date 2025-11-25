@@ -60,7 +60,7 @@ class HerdNetInference:
         if not os.path.exists(pth_path):
             raise FileNotFoundError(f"[ERROR] No se encontró el modelo → {pth_path}")
 
-        checkpoint = torch.load(pth_path, map_location=self.device)
+        checkpoint = torch.load(pth_path, map_location=self.device, weights_only=False)
         self.classes = checkpoint["classes"]
         self.num_classes = len(self.classes) + 1
         self.mean = checkpoint["mean"]
