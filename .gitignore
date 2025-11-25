@@ -60,3 +60,14 @@ htmlcov/
 dist/
 build/
 *.egg-info/
+
+# ===========================================
+# Frontend Next.js (new_ui/)
+# ===========================================
+new_ui/node_modules/
+new_ui/.next/
+new_ui/.turbo/
+new_ui/out/
+new_ui/.vercel/
+*.tsbuildinfo
+next-env.d.ts
