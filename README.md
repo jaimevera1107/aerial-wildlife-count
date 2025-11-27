@@ -144,6 +144,23 @@ Asegúrese de tener instalado lo siguiente:
   ```
 * **Docker** (opcional, para despliegue containerizado)
 
+### Dependencias Principales
+
+Las siguientes son las dependencias principales del proyecto (versiones en `requirements.txt`):
+
+| Paquete | Versión | Descripción |
+|---------|---------|-------------|
+| torch | 2.9.0 | Framework de deep learning |
+| torchvision | 0.24.0 | Utilidades de visión para PyTorch |
+| gradio | 5.49.1 | Framework para interfaces web |
+| albumentations | 2.0.8 | Aumentación de imágenes |
+| opencv-python-headless | 4.12.0.88 | Procesamiento de imágenes |
+| pandas | 2.3.3 | Manipulación de datos |
+| numpy | 2.2.6 | Computación numérica |
+| scikit-learn | 1.7.2 | Machine learning |
+| animaloc | 0.2.1 | HerdNet (desde GitHub) |
+| wandb | 0.22.3 | Logging de experimentos |
+
 ### Instalación
 
 1. **Clonar el repositorio**
