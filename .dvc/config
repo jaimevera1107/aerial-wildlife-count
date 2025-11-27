@@ -1,0 +1,6 @@
+[core]
+    remote = storage
+['remote "storage"']
+    url = ssh://dvc@rinconseguro.com:33/share/DVC
+['remote "myremote"']
+    url = /tmp/dvc-storage

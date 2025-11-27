@@ -1,0 +1,73 @@
+# ===========================================
+# .gitignore - Aerial Wildlife Count
+# ===========================================
+
+# Python cache (en cualquier ubicación)
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# Entornos virtuales
+.venv/
+venv/
+ENV/
+env/
+
+# Archivos de sistema macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Archivos temporales
+.ipynb_checkpoints/
+workspace/
+*.log
+*.tmp
+
+# IDEs
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# HerdNet (submódulos/copias locales)
+tools/HerdNet
+notebooks/HerdNet
+
+# Datos grandes controlados por DVC
+/data/
+/data
+*.dvc.lock
+
+# Modelos (controlados por DVC)
+*.pth
+!resources/models/*.pth
+
+# Outputs temporales
+resources/outputs/
+resources/uploads/
+resources/logs/
+
+# Pytest / Coverage
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Distribución
+dist/
+build/
+*.egg-info/
+
+# ===========================================
+# Frontend Next.js (new_ui/)
+# ===========================================
+new_ui/node_modules/
+new_ui/.next/
+new_ui/.turbo/
+new_ui/out/
+new_ui/.vercel/
+*.tsbuildinfo
+next-env.d.ts

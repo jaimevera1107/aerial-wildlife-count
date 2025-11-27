@@ -1,0 +1,7 @@
+outs:
+- md5: c787b42aea9e57b02b273875444ea57f
+  size: 78678824
+  hash: md5
+  path: herdnet_best.pth
+  # Modelo de main controlado por Git LFS
+  # SHA256: bad3367c0c0b26a5392b9f654b0eae25ef205c15334108603e7085ec54905c05
