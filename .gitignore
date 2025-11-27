@@ -71,3 +71,4 @@ new_ui/out/
 new_ui/.vercel/
 *.tsbuildinfo
 next-env.d.ts
+data/
